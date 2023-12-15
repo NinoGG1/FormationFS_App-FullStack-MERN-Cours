@@ -15,4 +15,12 @@ router.delete("/:id", (req, res) => {
   res.json({ messageId: "Suppression du post " + req.params.id });
 });
 
+router.patch("/like-post/:id", (req, res) => {
+  res.json({ messageId: "Like du post " + req.params.id });
+});
+
+router.patch("/dislike-post/:id", (req, res) => {
+  res.json({ messageId: "Dislike du post " + req.params.id });
+});
+
 module.exports = router;
