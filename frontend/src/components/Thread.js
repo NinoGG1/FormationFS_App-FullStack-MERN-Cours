@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Post from "./Post";
 
-const Thread = () => {
+const Thread = ({ userId }) => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/post/")
+      .then((res) => setPosts(res.data))
+      .catch((err) => console.error(err)); // Ajoutez la gestion des erreurs
+  }, []);
+
   return (
-    <div>
-      <h1>THREAD</h1>
+    <div className="thread-container">
+      {posts.map((post) => (
+        <Post key={post._id} post={post} userId={userId} />
+      ))}
     </div>
   );
 };
