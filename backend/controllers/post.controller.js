@@ -48,3 +48,41 @@ module.exports.deletePost = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+
+module.exports.likePost = async (req, res) => {
+  try {
+    const post = await PostModel.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Ce post n'existe pas" });
+    }
+
+    await PostModel.updateOne(
+      { _id: req.params.id },
+      { $addToSet: { likers: req.body.userId } },
+      { new: true }
+    );
+    res.status(200).json({ message: "Post liké, par : " + req.body.userId });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+module.exports.dislikePost = async (req, res) => {
+  try {
+    const post = await PostModel.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Ce post n'existe pas" });
+    }
+
+    await PostModel.updateOne(
+      { _id: req.params.id },
+      { $pull: { likers: req.body.userId } },
+      { new: true }
+    );
+    res.status(200).json({ message: "Post disliké, par : " + req.body.userId });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
