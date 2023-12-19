@@ -14,9 +14,11 @@ const Thread = ({ userId }) => {
 
   return (
     <div className="thread-container">
-      {posts.map((post) => (
-        <Post key={post._id} post={post} userId={userId} />
-      ))}
+      {posts
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .map((post) => (
+          <Post key={post._id} post={post} userId={userId} />
+        ))}
     </div>
   );
 };
