@@ -1,11 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { dislike, like } from "../features/post.slice";
 
-const LikePost = ({ post, userId }) => {
+const LikePost = ({ post }) => {
   const [userLiked, setUserLiked] = useState(false);
+  const userId = useSelector((state) => state.user.userId);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (post.likers.includes(userId)) {
+    if (post.likers && post.likers.includes(userId)) {
       setUserLiked(true);
     } else {
       setUserLiked(false);
@@ -13,19 +17,17 @@ const LikePost = ({ post, userId }) => {
   }, [post, userId]);
 
   const likePost = () => {
-    axios
-      .patch("http://localhost:3001/post/like-post/" + post._id, { userId })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    axios.patch("http://localhost:3001/post/like-post/" + post._id, { userId });
+    dispatch(like([userId, post._id]));
 
     setUserLiked(true);
   };
 
   const dislikePost = () => {
-    axios
-      .patch("http://localhost:3001/post/dislike-post/" + post._id, { userId })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    axios.patch("http://localhost:3001/post/dislike-post/" + post._id, {
+      userId,
+    });
+    dispatch(dislike([userId, post._id]));
 
     setUserLiked(false);
   };

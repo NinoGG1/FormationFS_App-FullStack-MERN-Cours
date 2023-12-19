@@ -3,11 +3,15 @@ import LikePost from "./LikePost";
 import { set } from "mongoose";
 import axios from "axios";
 import DeletePost from "./DeletePost";
+import { useDispatch, useSelector } from "react-redux";
+import { updatePost } from "../features/post.slice";
 
-const Post = ({ post, userId }) => {
+const Post = ({ post }) => {
   const [isAuthor, setIsAuthor] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const userId = useSelector((state) => state.user.userId);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (post.author === userId) {
@@ -22,6 +26,7 @@ const Post = ({ post, userId }) => {
       axios.put("http://localhost:3001/post/" + post._id, {
         message: newMessage,
       });
+      dispatch(updatePost([newMessage, post._id]));
     }
   };
 
