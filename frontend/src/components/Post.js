@@ -1,7 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LikePost from "./LikePost";
+import { set } from "mongoose";
+import axios from "axios";
+import DeletePost from "./DeletePost";
 
 const Post = ({ post, userId }) => {
+  const [isAuthor, setIsAuthor] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+
+  useEffect(() => {
+    if (post.author === userId) {
+      setIsAuthor(true);
+    } else {
+      setIsAuthor(false);
+    }
+  }, [post, userId]);
+
+  const handleEdit = () => {
+    if (newMessage) {
+      axios.put("http://localhost:3001/post/" + post._id, {
+        message: newMessage,
+      });
+    }
+  };
+
   const dateFormater = (date) => {
     const newDate = new Date(date);
     return `${newDate.getDate()}/${
@@ -15,9 +38,43 @@ const Post = ({ post, userId }) => {
         <h3>{post.author}</h3>
         <p>Posté le : {dateFormater(post.createdAt)}</p>
       </div>
-      <p>{post.message}</p>
+      {isEditing ? (
+        <div className="edit-container">
+          <textarea
+            defaultValue={post.message}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <div className="btn-container">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                handleEdit();
+              }}
+            >
+              Valider
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p>{newMessage ? newMessage : post.message}</p>
+      )}
+
       <div className="icons-part">
         <LikePost post={post} userId={userId} />
+        {isAuthor && (
+          <div className="update-delete-icons">
+            <span
+              id="update-btn"
+              onClick={() => {
+                setIsEditing(!isEditing);
+                handleEdit();
+              }}
+            >
+              &#10000;
+            </span>
+            <DeletePost postId={post._id} />
+          </div>
+        )}
       </div>
     </div>
   );

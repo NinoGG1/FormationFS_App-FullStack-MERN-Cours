@@ -156,7 +156,7 @@ input[type="submit"]:hover {
 #delete-btn {
   right: 14px;
   bottom: 5px;
-  transform: rotate(45deg);
+  transform: rotate(0deg);
   font-size: 1.45rem;
 }
 .update-delete-icons span {
